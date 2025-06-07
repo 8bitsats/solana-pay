@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alice AI Shopping Assistant - X402 + ALICE Token Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            min-height: 700px;
+        }
+        
+        .sidebar {
+            background: #f8f9fa;
+            padding: 30px;
+            width: 350px;
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4a90e2 0%, #8b5cf6 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .alice-avatar {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .header-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .chat-container {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #fafbfc;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .message.alice .message-avatar {
+            background: linear-gradient(135deg, #4a90e2 0%, #8b5cf6 100%);
+        }
+        
+        .message.user .message-avatar {
+            background: #e5e7eb;
+        }
+        
+        .message-content {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            max-width: 70%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .message.user .message-content {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .payment-notification {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .input-container {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .input-field {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+        
+        .send-button {
+            background: linear-gradient(135deg, #4a90e2 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .send-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .wallet-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .wallet-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .balance-item:last-child {
+            border-bottom: none;
+        }
+        
+        .token-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .alice-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .usdc-icon {
+            background: #2775ca;
+            color: white;
+        }
+        
+        .sol-icon {
+            background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
+            color: white;
+        }
+        
+        .balance-amount {
+            font-weight: 600;
+        }
+        
+        .activity-feed {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .activity-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .activity-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-time {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .quick-action-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .quick-action-btn:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+        
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+        
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: loadingDot 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes loadingDot {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="wallet-info">
+                <div class="wallet-header">
+                    💳 Wallet Balance
+                </div>
+                <div class="balance-item">
+                    <div class="token-name">
+                        <div class="token-icon alice-icon">A</div>
+                        <span>ALICE</span>
+                    </div>
+                    <div class="balance-amount" id="alice-balance">1,000.00</div>
+                </div>
+                <div class="balance-item">
+                    <div class="token-name">
+                        <div class="token-icon usdc-icon">$</div>
+                        <span>USDC</span>
+                    </div>
+                    <div class="balance-amount" id="usdc-balance">500.00</div>
+                </div>
+                <div class="balance-item">
+                    <div class="token-name">
+                        <div class="token-icon sol-icon">◎</div>
+                        <span>SOL</span>
+                    </div>
+                    <div class="balance-amount" id="sol-balance">2.50</div>
+                </div>
+            </div>
+            
+            <div class="activity-feed">
+                <div class="activity-header">Recent Activity</div>
+                <div id="activity-list">
+                    <div class="activity-item">
+                        <div>Connected to Helio Pay</div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                    <div class="activity-item">
+                        <div>Wallet connected</div>
+                        <div class="activity-time">2 min ago</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="quickAction('search headphones')">
+                    🎧 Find Headphones
+                </button>
+                <button class="quick-action-btn" onclick="quickAction('check prices laptop')">
+                    💻 Laptop Prices
+                </button>
+                <button class="quick-action-btn" onclick="quickAction('buy coffee maker under $100')">
+                    ☕ Coffee Maker
+                </button>
+                <button class="quick-action-btn" onclick="quickAction('search gaming chair')">
+                    🪑 Gaming Chair
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <div class="header-info">
+                    <div class="alice-avatar">🤖</div>
+                    <div>
+                        <h1>Alice AI Shopping Assistant</h1>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            <span>Active • X402 Protocol Enabled</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-container" id="chat-container">
+                <div class="message alice">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>Hi! I'm Alice, your AI shopping assistant powered by X402 protocol and ALICE tokens. 🛍️</p>
+                        <p style="margin-top: 10px;">I can help you:</p>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Search for products across multiple stores</li>
+                            <li>Compare prices and find the best deals</li>
+                            <li>Make purchases automatically (with your approval)</li>
+                            <li>Track orders and deliveries</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Just tell me what you're looking for!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="user-input" 
+                    placeholder="Ask Alice to help you shop..."
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="send-button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulated Alice AI responses and X402 payment flow
+        let messageId = 0;
+        let aliceBalance = 1000;
+        let usdcBalance = 500;
+        let solBalance = 2.5;
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show Alice typing
+            showTypingIndicator();
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                processUserMessage(message);
+            }, 1500);
+        }
+        
+        function quickAction(action) {
+            document.getElementById('user-input').value = action;
+            sendMessage();
+        }
+        
+        function addMessage(content, sender) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${sender === 'alice' ? '🤖' : '👤'}</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const chatContainer = document.getElementById('chat-container');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message alice typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="loading-dots">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function processUserMessage(message) {
+            removeTypingIndicator();
+            
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('headphone') || lowerMessage.includes('earphone')) {
+                handleHeadphoneSearch();
+            } else if (lowerMessage.includes('laptop')) {
+                handleLaptopSearch();
+            } else if (lowerMessage.includes('coffee maker')) {
+                handleCoffeeMakerSearch();
+            } else if (lowerMessage.includes('buy') && lowerMessage.includes('now')) {
+                handlePurchase();
+            } else if (lowerMessage.includes('balance')) {
+                showBalance();
+            } else {
+                addMessage("I can help you search for products! Try asking me to find headphones, laptops, or coffee makers. You can also ask about your balance.", 'alice');
+            }
+        }
+        
+        function handleHeadphoneSearch() {
+            // Simulate X402 payment for API access
+            addPaymentNotification('API Access Fee', 0.1, 'ALICE', 'Search API');
+            updateBalance('ALICE', -0.1);
+            
+            const response = `
+                <p>I found some great wireless headphones for you! Here are the top options:</p>
+                <div class="product-card">
+                    <div class="product-image">🎧</div>
+                    <div class="product-info">
+                        <div class="product-name">Sony WH-1000XM5</div>
+                        <div>Premium noise cancelling, 30hr battery</div>
+                        <div class="product-price">349.99 USDC</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">🎧</div>
+                    <div class="product-info">
+                        <div class="product-name">Apple AirPods Pro 2</div>
+                        <div>Seamless Apple integration, ANC</div>
+                        <div class="product-price">249.99 USDC</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">🎧</div>
+                    <div class="product-info">
+                        <div class="product-name">Bose QuietComfort 45</div>
+                        <div>Comfort king, excellent ANC</div>
+                        <div class="product-price">279.99 USDC</div>
+                    </div>
+                </div>
+                <p style="margin-top: 15px;">Would you like me to purchase any of these for you? Just say "buy the Sony headphones now" and I'll handle the checkout!</p>
+            `;
+            
+            addMessage(response, 'alice');
+            addActivity('Searched for headphones - 0.1 ALICE');
+        }
+        
+        function handleLaptopSearch() {
+            // Simulate X402 payment
+            addPaymentNotification('API Access Fee', 0.2, 'ALICE', 'Premium Search API');
+            updateBalance('ALICE', -0.2);
+            
+            const response = `
+                <p>I've searched multiple retailers for laptops. Here are the best deals I found:</p>
+                <div class="product-card">
+                    <div class="product-image">💻</div>
+                    <div class="product-info">
+                        <div class="product-name">MacBook Air M2</div>
+                        <div>13.6", M2 chip, 256GB SSD</div>
+                        <div class="product-price">999.00 USDC</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">💻</div>
+                    <div class="product-info">
+                        <div class="product-name">Dell XPS 13</div>
+                        <div>13.4", Intel i7, 512GB SSD</div>
+                        <div class="product-price">1,199.00 USDC</div>
+                    </div>
+                </div>
+                <p style="margin-top: 15px;">I can also check for student discounts or compare more models if you'd like!</p>
+            `;
+            
+            addMessage(response, 'alice');
+            addActivity('Searched for laptops - 0.2 ALICE');
+        }
+        
+        function handleCoffeeMakerSearch() {
+            // Simulate X402 payment
+            addPaymentNotification('API Access Fee', 0.05, 'ALICE', 'Search API');
+            updateBalance('ALICE', -0.05);
+            
+            const response = `
+                <p>I found some coffee makers under $100! ☕</p>
+                <div class="product-card">
+                    <div class="product-image">☕</div>
+                    <div class="product-info">
+                        <div class="product-name">Keurig K-Classic</div>
+                        <div>Single serve, 3 cup sizes</div>
+                        <div class="product-price">79.99 USDC</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">☕</div>
+                    <div class="product-info">
+                        <div class="product-name">Hamilton Beach FlexBrew</div>
+                        <div>2-way brewer, programmable</div>
+                        <div class="product-price">89.99 USDC</div>
+                    </div>
+                </div>
+                <p style="margin-top: 15px;">Both are highly rated and available for immediate shipping!</p>
+            `;
+            
+            addMessage(response, 'alice');
+            addActivity('Searched for coffee makers - 0.05 ALICE');
+        }
+        
+        function handlePurchase() {
+            // Simulate purchase with USDC
+            if (usdcBalance >= 79.99) {
+                addPaymentNotification('Purchase Complete', 79.99, 'USDC', 'Keurig K-Classic Coffee Maker');
+                updateBalance('USDC', -79.99);
+                
+                const response = `
+                    <p>🎉 Purchase successful!</p>
+                    <p>I've ordered the Keurig K-Classic coffee maker for you.</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Order total: 79.99 USDC</li>
+                        <li>Estimated delivery: 2-3 business days</li>
+                        <li>Tracking number: #ALI-2024-0042</li>
+                    </ul>
+                    <p style="margin-top: 10px;">You'll receive an email confirmation shortly!</p>
+                `;
+                
+                addMessage(response, 'alice');
+                addActivity('Purchased coffee maker - 79.99 USDC');
+            } else {
+                addMessage("You don't have enough USDC balance for this purchase. Would you like me to swap some ALICE tokens to USDC?", 'alice');
+            }
+        }
+        
+        function showBalance() {
+            const response = `
+                <p>Here's your current wallet balance:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>ALICE: ${aliceBalance.toFixed(2)} tokens</li>
+                    <li>USDC: ${usdcBalance.toFixed(2)}</li>
+                    <li>SOL: ${solBalance.toFixed(2)}</li>
+                </ul>
+                <p style="margin-top: 10px;">You have plenty of funds for shopping! 💰</p>
+            `;
+            addMessage(response, 'alice');
+        }
+        
+        function addPaymentNotification(description, amount, token, service) {
+            const chatContainer = document.getElementById('chat-container');
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = 'payment-notification';
+            notificationDiv.innerHTML = `
+                <div class="payment-icon">💳</div>
+                <div>
+                    <div><strong>${description}</strong></div>
+                    <div>Paid ${amount} ${token} for ${service}</div>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">
+                        Transaction confirmed on Solana • 0.4s
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(notificationDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function updateBalance(token, change) {
+            if (token === 'ALICE') {
+                aliceBalance += change;
+                document.getElementById('alice-balance').textContent = aliceBalance.toFixed(2);
+            } else if (token === 'USDC') {
+                usdcBalance += change;
+                document.getElementById('usdc-balance').textContent = usdcBalance.toFixed(2);
+            } else if (token === 'SOL') {
+                solBalance += change;
+                document.getElementById('sol-balance').textContent = solBalance.toFixed(2);
+            }
+        }
+        
+        function addActivity(activity) {
+            const activityList = document.getElementById('activity-list');
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item';
+            newActivity.innerHTML = `
+                <div>${activity}</div>
+                <div class="activity-time">Just now</div>
+            `;
+            activityList.insertBefore(newActivity, activityList.firstChild);
+            
+            // Keep only last 5 activities
+            while (activityList.children.length > 5) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+        
+        // Initialize with a demo flow
+        setTimeout(() => {
+            document.getElementById('user-input').focus();
+        }, 500);
+    </script>
+</body>
+</html>

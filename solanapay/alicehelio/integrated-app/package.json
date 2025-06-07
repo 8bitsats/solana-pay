@@ -1,0 +1,25 @@
+{
+  "name": "alice-helio-integrated-app",
+  "version": "1.0.0",
+  "description": "Integrated Alice AI Shopping Assistant with X402, Helio Pay, and Solana Pay",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@crossmint/wallets-sdk": "^0.8.1",
+    "@solana/pay": "^0.2.4",
+    "@solana/spl-token": "^0.3.5",
+    "@solana/web3.js": "^1.56.0",
+    "axios": "^1.6.7",
+    "bs58": "^4.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

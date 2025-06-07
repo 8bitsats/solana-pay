@@ -1,0 +1,13 @@
+{
+  "name": "crossmint-wallet-test",
+  "version": "1.0.0",
+  "description": "Testing crossmint wallet integration",
+  "type": "module",
+  "main": "test-wallet-sdk.js",
+  "scripts": {
+    "test": "node test-wallet-sdk.js"
+  },
+  "dependencies": {
+    "@crossmint/wallets-sdk": "^0.8.1"
+  }
+}

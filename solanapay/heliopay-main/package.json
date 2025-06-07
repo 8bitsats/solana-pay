@@ -1,0 +1,20 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^5.1.8"
+  },
+  "scripts": {
+    "release": "lerna publish",
+    "build": "(yarn workspace @heliofi/solana-adapter run build) && (yarn workspace @heliofi/sdk run build)"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "http-cache-semantics": "^4.1.1"
+  }
+}

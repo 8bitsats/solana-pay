@@ -1,0 +1,28 @@
+{
+    "name": "shopper-agent-langchain",
+    "version": "0.0.1",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "start": "pnpm dlx tsx index.ts"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@goat-sdk/adapter-langchain": "0.2.10",
+        "@goat-sdk/core": "0.4.6",
+        "@goat-sdk/plugin-crossmint-headless-checkout": "0.0.8",
+        "@goat-sdk/plugin-erc20": "^0.2.9",
+        "@goat-sdk/wallet-viem": "0.2.6",
+        "@langchain/core": "0.3.6",
+        "@langchain/openai": "^0.3.5",
+        "dotenv": "^16.4.5",
+        "langchain": "^0.3.2",
+        "viem": "2.21.49"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "22.7.4",
+        "tsx": "^4.19.2"
+    }
+}
